@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "405787874034",
+    "project_id": "salt-n-pepper-484fb",
+    "storage_bucket": "salt-n-pepper-484fb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:405787874034:android:8fd4a7b0d3ef2396b3b66b",
+        "android_client_info": {
+          "package_name": "com.example.salt_n_pepper_seller"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "405787874034-s9537rc3mdt3hvtuukv8a6ngc73m5jhl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.salt_n_pepper_seller",
+            "certificate_hash": "e9784943ab51403476230438fb019cd27ffde23c"
+          }
+        },
+        {
+          "client_id": "405787874034-olvtgcgh120btkg6qia4mvehuffbemso.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDWb31zOfIK_tT6lZYC5pQJMPIv-YQCCec"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "405787874034-olvtgcgh120btkg6qia4mvehuffbemso.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
