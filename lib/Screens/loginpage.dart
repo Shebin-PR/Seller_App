@@ -17,14 +17,16 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   MobileVerificationState currentState =
       MobileVerificationState.SHOW_MOBILE_FORM_STATE;
+
   final mobileNoController = TextEditingController();
   final otpController = TextEditingController();
   final _formKey = GlobalKey();
+
   FirebaseAuth _auth = FirebaseAuth.instance;
 
   late String verificationId;
 
-  final GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey();
+  // final GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey();
 
   bool showLoading = false;
 
@@ -35,37 +37,41 @@ class _LoginPageState extends State<LoginPage> {
     final maxHeight = MediaQuery.of(context).size.height;
     return SafeArea(
       child: Scaffold(
-        key: _scaffoldkey,
+        // key: _scaffoldkey,
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           child: SizedBox(
             width: maxWidth,
             height: maxHeight,
-            child: ListView(
-              children: [
-                showLoading
-                    ? Center(
-                        child: CircularProgressIndicator(),
-                      )
-                    : currentState ==
-                            MobileVerificationState.SHOW_MOBILE_FORM_STATE
-                        // ? loginimg(maxHeight / 1.7)
-                        ? TextFieldMethod(maxWidth, maxHeight / 1.7, context)
-                        : CircularProgressIndicator()
-              ],
-            ),
+            child: showLoading
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : ListView(
+                    shrinkWrap: true,
+                    children: [
+                      currentState ==
+                              MobileVerificationState.SHOW_MOBILE_FORM_STATE
+                          ? TextFieldMethod(maxWidth, maxHeight / 1.7, context)
+                          : getOtpFormWidget()
+                    ],
+                  ),
           ),
         ),
       ),
     );
   }
 
-  Column TextFieldMethod(
-      double maxWidth, double maxHeight, BuildContext context) {
-    return Column(
+  ListView TextFieldMethod(
+    double maxWidth,
+    double maxHeight,
+    BuildContext context,
+  ) {
+    return ListView(
+      shrinkWrap: true,
       children: [
-        Container(
+        SizedBox(
           height: maxHeight,
           child: Image.asset(
             "assets/images/Mobile login.gif",
@@ -80,6 +86,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
           child: ListView(
+            shrinkWrap: true,
             // mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Padding(
@@ -91,24 +98,21 @@ class _LoginPageState extends State<LoginPage> {
               ),
               Padding(
                 padding: const EdgeInsets.only(
-                    top: 8, left: 20, right: 20, bottom: 8),
+                  top: 8,
+                  left: 20,
+                  right: 20,
+                  bottom: 8,
+                ),
                 child: Form(
                   key: _formKey,
                   child: Material(
                     elevation: 10.0,
                     shadowColor: Colors.grey,
-                    child: TextFormField(
+                    child: TextField(
                       controller: mobileNoController,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Please Enter Your Mobile Number";
-                        } else if (value.length != 10) {
-                          return "Enter Valid Mobile Number";
-                        }
-                        return null;
-                      },
                       decoration: const InputDecoration(
                         focusedBorder: InputBorder.none,
+                        hintText: "Phone Number",
                         fillColor: Colors.white,
                         filled: true,
                         border: OutlineInputBorder(borderSide: BorderSide.none),
@@ -147,7 +151,7 @@ class _LoginPageState extends State<LoginPage> {
                         setState(() {
                           showLoading = false;
                           currentState =
-                              MobileVerificationState.SHOW_MOBILE_FORM_STATE;
+                              MobileVerificationState.SHOW_OTP_FORM_STATE;
                           this.verificationId = verificationId;
                         });
                       },
@@ -164,35 +168,43 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  getOtpFormWidget() {
-    return Column(
-      children: [
-        Spacer(),
-        TextField(
-          controller: otpController,
-          decoration: InputDecoration(hintText: "Enter otp"),
+  Center getOtpFormWidget() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(100.0),
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            const Spacer(),
+            TextField(
+              controller: otpController,
+              decoration: const InputDecoration(hintText: "Enter otp"),
+            ),
+            const SizedBox(
+              height: 18,
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final PhoneAuthCredential phoneAuthCredential =
+                    PhoneAuthProvider.credential(
+                  verificationId: verificationId,
+                  smsCode: otpController.text,
+                );
+                signInWithPhoneAuthCredential(phoneAuthCredential);
+              },
+              child: Text("Verify"),
+            ),
+            const Spacer(),
+          ],
         ),
-        SizedBox(
-          height: 18,
-        ),
-        ElevatedButton(
-          onPressed: () async {
-            PhoneAuthCredential phoneAuthCredential =
-                PhoneAuthProvider.credential(
-              verificationId: verificationId,
-              smsCode: otpController.text,
-            );
-            signInWithPhoneAuthCredential(phoneAuthCredential);
-          },
-          child: Text("Verify"),
-        ),
-        Spacer(),
-      ],
+      ),
     );
   }
 
+  // ignore: avoid_void_async
   void signInWithPhoneAuthCredential(
-      PhoneAuthCredential phoneAuthCredential) async {
+    PhoneAuthCredential phoneAuthCredential,
+  ) async {
     setState(() {
       showLoading = true;
     });
@@ -203,8 +215,13 @@ class _LoginPageState extends State<LoginPage> {
         showLoading = false;
       });
       if (authCredential.user != null) {
+        // ignore: use_build_context_synchronously
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => HomeScreen()));
+          context,
+          MaterialPageRoute(
+            builder: (context) => const HomeScreen(),
+          ),
+        );
       }
     } on FirebaseAuthException catch (e) {
       // TODO
@@ -217,7 +234,6 @@ class _LoginPageState extends State<LoginPage> {
           content: Text(e.message.toString()),
         ),
       );
-      ;
     }
   }
 }
