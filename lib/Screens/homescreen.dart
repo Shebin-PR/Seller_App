@@ -15,22 +15,23 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Column(
-          children: [
-            Container(
-              color: Colors.deepPurpleAccent,
-              child: Text(
+        body: Center(
+          child: Column(
+            children: [
+              const Text(
                 "Hello World",
                 style: TextStyle(fontSize: 30, color: Colors.black26),
               ),
-            ),
-            ElevatedButton(
+              ElevatedButton(
                 onPressed: () async {
                   await _auth.signOut();
+                  // ignore: use_build_context_synchronously
                   Navigator.pop(context);
                 },
-                child: Text("Logout"))
-          ],
+                child: const Text("Logout"),
+              )
+            ],
+          ),
         ),
       ),
     );
