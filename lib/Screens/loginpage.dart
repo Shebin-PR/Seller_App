@@ -1,239 +1,163 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:salt_n_pepper_seller/Screens/homescreen.dart';
+import 'package:get/get.dart';
+import 'package:salt_n_pepper_seller/Controller/controller.dart';
+import 'package:salt_n_pepper_seller/Screens/verification.dart';
 
-enum MobileVerificationState {
-  SHOW_MOBILE_FORM_STATE,
-  SHOW_OTP_FORM_STATE,
-}
-
-class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
-
-  @override
-  State<LoginPage> createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
-  MobileVerificationState currentState =
-      MobileVerificationState.SHOW_MOBILE_FORM_STATE;
-
-  final mobileNoController = TextEditingController();
-  final otpController = TextEditingController();
-  final _formKey = GlobalKey();
-
-  FirebaseAuth _auth = FirebaseAuth.instance;
-
-  late String verificationId;
-
-  // final GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey();
-
-  bool showLoading = false;
+// ignore: must_be_immutable
+class LoginPage extends StatelessWidget {
+  LoginPage({Key? key}) : super(key: key);
+  final _formKey = GlobalKey<FormState>();
+  Controller controller = Get.put(Controller());
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  PhoneVerificationCompleted? verificationCompleted;
+  PhoneVerificationFailed? verificationFailed;
+  PhoneCodeAutoRetrievalTimeout? codeAutoRetrievalTimeout;
+  PhoneCodeSent? codeSent;
+  final TextEditingController mobileNoController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    // final oriantion = MediaQuery.of(context).orientation;
+    verificationCompleted = (PhoneAuthCredential phoneAuthCredential) async {
+      await _auth.signInWithCredential(phoneAuthCredential);
+    };
+
+    codeSent = (String? verificationId, [int? forceResendingToken]) async {
+      // print("check your phone");
+
+      controller.verificationId = verificationId!;
+      Get.to(() => Verification());
+      // print(controller.verificationId);
+    };
+
+    verificationFailed = (FirebaseAuthException authException) {
+      Get.snackbar("Failed", "Please Enter valid Mobile Number",
+          snackPosition: SnackPosition.BOTTOM,);
+
+      // print(authException.message);
+    };
+
+    codeAutoRetrievalTimeout = (String verificationId) {
+      // print(verificationId);
+
+      controller.verificationId = verificationId;
+      // print(controller.verificationId);
+    };
+
+    final oriantion = MediaQuery.of(context).orientation;
     final maxWidth = MediaQuery.of(context).size.width;
     final maxHeight = MediaQuery.of(context).size.height;
-    return SafeArea(
-      child: Scaffold(
-        // key: _scaffoldkey,
-        backgroundColor: Colors.white,
-        body: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: SizedBox(
-            width: maxWidth,
-            height: maxHeight,
-            child: showLoading
-                ? const Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : ListView(
-                    shrinkWrap: true,
+    return Scaffold(
+      body: SafeArea(
+        child: oriantion == Orientation.portrait || maxWidth <= 650
+            ? SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: SizedBox(
+                  width: maxWidth,
+                  height: maxHeight,
+                  child: ListView(
                     children: [
-                      currentState ==
-                              MobileVerificationState.SHOW_MOBILE_FORM_STATE
-                          ? TextFieldMethod(maxWidth, maxHeight / 1.7, context)
-                          : getOtpFormWidget()
+                      loginimg(maxHeight / 2.3),
+                      field(context, maxWidth),
                     ],
                   ),
-          ),
-        ),
+                ),
+              )
+            : Row(
+                children: [
+                  loginimg(maxHeight),
+                  Expanded(
+                    child: SizedBox(
+                      height: maxHeight / 1.2,
+                      child: field(context, maxWidth),
+                    ),
+                  ),
+                ],
+              ),
       ),
     );
   }
 
-  ListView TextFieldMethod(
-    double maxWidth,
-    double maxHeight,
-    BuildContext context,
-  ) {
-    return ListView(
-      shrinkWrap: true,
-      children: [
-        SizedBox(
-          height: maxHeight,
-          child: Image.asset(
-            "assets/images/Mobile login.gif",
-          ),
+  Container field(BuildContext context, double maxWidth) {
+    return Container(
+      height: maxWidth - 3,
+      decoration: const BoxDecoration(
+        color: Colors.blue,
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(50),
         ),
-        Container(
-          height: maxWidth - 5,
-          decoration: const BoxDecoration(
-            color: Colors.blue,
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(50),
+      ),
+      child: ListView(
+        shrinkWrap: true,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Text(
+              "ENTER YOUR MOBILE NUMBER",
+              style: Theme.of(context).textTheme.headline3,
             ),
           ),
-          child: ListView(
-            shrinkWrap: true,
-            // mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Text(
-                  "ENTER YOUR MOBILE NUMBER",
-                  style: Theme.of(context).textTheme.headline3,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(
-                  top: 8,
-                  left: 20,
-                  right: 20,
-                  bottom: 8,
-                ),
-                child: Form(
-                  key: _formKey,
-                  child: Material(
-                    elevation: 10.0,
-                    shadowColor: Colors.grey,
-                    child: TextField(
-                      controller: mobileNoController,
-                      decoration: const InputDecoration(
-                        focusedBorder: InputBorder.none,
-                        hintText: "Phone Number",
-                        fillColor: Colors.white,
-                        filled: true,
-                        border: OutlineInputBorder(borderSide: BorderSide.none),
-                      ),
-                    ),
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Form(
+              key: _formKey,
+              child: Material(
+                elevation: 10.0,
+                shadowColor: Colors.grey,
+                child: TextFormField(
+                  controller: mobileNoController,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Please Enter Your Mobile Number";
+                    } else if (value.length != 10) {
+                      return "Enter Valid Mobile Number";
+                    }
+                    return null;
+                  },
+                  decoration: const InputDecoration(
+                    focusedBorder: InputBorder.none,
+                    filled: true,
+                    border:
+                        OutlineInputBorder(borderSide: BorderSide.none),
                   ),
                 ),
               ),
-              SizedBox(
-                width: maxWidth / 1,
-                child: ElevatedButton(
-                  onPressed: () async {
-                    setState(() {
-                      showLoading = true;
-                    });
-                    await _auth.verifyPhoneNumber(
-                      phoneNumber: mobileNoController.text,
-                      verificationCompleted: (phoneAuthCredential) async {
-                        setState(() {
-                          showLoading = false;
-                        });
-                        // signInWithPhoneAuthCredential(phoneAuthCredential);
-                      },
-                      verificationFailed: (verificationFailed) async {
-                        setState(() {
-                          showLoading = false;
-                        });
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content:
-                                Text(verificationFailed.message.toString()),
-                          ),
-                        );
-                      },
-                      codeSent: (verificationId, ressendingToken) async {
-                        setState(() {
-                          showLoading = false;
-                          currentState =
-                              MobileVerificationState.SHOW_OTP_FORM_STATE;
-                          this.verificationId = verificationId;
-                        });
-                      },
-                      codeAutoRetrievalTimeout: (verificationId) async {},
-                    );
-                  },
-                  child: const Text("Login With Otp"),
-                ),
-              )
-            ],
+            ),
           ),
-        ),
-      ],
-    );
-  }
-
-  Center getOtpFormWidget() {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(100.0),
-        child: ListView(
-          shrinkWrap: true,
-          children: [
-            const Spacer(),
-            TextField(
-              controller: otpController,
-              decoration: const InputDecoration(hintText: "Enter otp"),
-            ),
-            const SizedBox(
-              height: 18,
-            ),
-            ElevatedButton(
+          Container(
+            width: maxWidth / 1.4,
+            margin: const EdgeInsets.only(left: 20, right: 20),
+            child: ElevatedButton(
               onPressed: () async {
-                final PhoneAuthCredential phoneAuthCredential =
-                    PhoneAuthProvider.credential(
-                  verificationId: verificationId,
-                  smsCode: otpController.text,
-                );
-                signInWithPhoneAuthCredential(phoneAuthCredential);
+                if (_formKey.currentState!.validate()) {
+                   String number = "+91${mobileNoController.text}";
+                  try {
+                    await _auth.verifyPhoneNumber(
+                        phoneNumber: number,
+                        timeout: const Duration(seconds: 5),
+                        verificationCompleted: verificationCompleted!,
+                        verificationFailed: verificationFailed!,
+                        codeSent: codeSent!,
+                        codeAutoRetrievalTimeout: codeAutoRetrievalTimeout!,);
+                  } catch (e) {
+                    print("Failed to Verify Phone Number: ${e}");
+                  }
+                }
               },
-              child: Text("Verify"),
+              child: const Text("Login With Otp"),
             ),
-            const Spacer(),
-          ],
-        ),
+          )
+        ],
       ),
     );
   }
 
-  // ignore: avoid_void_async
-  void signInWithPhoneAuthCredential(
-    PhoneAuthCredential phoneAuthCredential,
-  ) async {
-    setState(() {
-      showLoading = true;
-    });
-    try {
-      final authCredential =
-          await _auth.signInWithCredential(phoneAuthCredential);
-      setState(() {
-        showLoading = false;
-      });
-      if (authCredential.user != null) {
-        // ignore: use_build_context_synchronously
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const HomeScreen(),
-          ),
-        );
-      }
-    } on FirebaseAuthException catch (e) {
-      // TODO
-      setState(() {
-        showLoading = false;
-      });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.message.toString()),
-        ),
-      );
-    }
+  SizedBox loginimg(double maxHeight) {
+    return SizedBox(
+      height: maxHeight,
+      child: Image.asset(
+        "assets/images/Mobile login.gif",
+      ),
+    );
   }
 }

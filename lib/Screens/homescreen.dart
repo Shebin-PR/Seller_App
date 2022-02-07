@@ -15,7 +15,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Center(
+        appBar: AppBar(),
+        body: SingleChildScrollView(
           child: Column(
             children: [
               const Text(
