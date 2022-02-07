@@ -32,9 +32,9 @@ class Verification extends StatelessWidget {
         "PLEASE ENTER VALID OTP",
         snackPosition: SnackPosition.BOTTOM,
       );
-      print(
-        "Failed to sign in: " + e.toString(),
-      );
+      // print(
+      //   "Failed to sign in: " + e.toString(),
+      // );
     }
   }
 
@@ -70,7 +70,6 @@ class Verification extends StatelessWidget {
 
   Row landscapeMode(BuildContext context, double maxHeight, double maxWidth) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         imgpart(context, maxHeight * 1.2),
         Column(
@@ -84,7 +83,7 @@ class Verification extends StatelessWidget {
                 ),
               ],
             ),
-            Container(
+            SizedBox(
               width: maxWidth / 1.5,
               height: maxHeight / 4,
               child: PinInputTextField(
