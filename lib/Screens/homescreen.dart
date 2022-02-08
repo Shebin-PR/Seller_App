@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -10,16 +12,39 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   // final _auth = FirebaseAuth.instance;
 
-  TextEditingController shopOwnerName = TextEditingController();
-  TextEditingController shopName = TextEditingController();
-  TextEditingController contactNumber = TextEditingController();
-  TextEditingController cafeAddress = TextEditingController();
+  TextEditingController shopOwnerNamecontroller = TextEditingController();
+  TextEditingController shopNamecontroller = TextEditingController();
+  TextEditingController contactNumbercontroller = TextEditingController();
+  TextEditingController locationcontroller = TextEditingController();
+
+  Position? position;
+
+  List<Placemark>? placemarks;
+
+  getCurrentLocation() async {
+    LocationPermission permission;
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+    Position newPosition = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+    position = newPosition;
+    placemarks =
+        await placemarkFromCoordinates(position!.latitude, position!.longitude);
+    Placemark pMark = placemarks![0];
+
+    String completeAddress =
+        '${pMark.subThoroughfare} ${pMark.thoroughfare} , ${pMark.subLocality} ${pMark.locality}, ${pMark.subAdministrativeArea} , ${pMark.administrativeArea} ${pMark.postalCode}, ${pMark.country}';
+    locationcontroller.text = completeAddress;
+  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.teal[900],
+        backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Colors.white,
           title: const Text(
@@ -43,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         padding:
                             const EdgeInsets.only(top: 18, left: 18, right: 18),
                         child: Container(
-                          height: 60,
+                          height: 70,
                           decoration: BoxDecoration(
                             color: Colors.black,
                             borderRadius: BorderRadius.circular(5),
@@ -51,7 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Padding(
                             padding: const EdgeInsets.all(5.0),
                             child: TextFormField(
-                              controller: shopOwnerName,
+                              controller: shopOwnerNamecontroller,
                               style: const TextStyle(
                                 color: Colors.white,
                                 letterSpacing: 0.8,
@@ -81,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         padding:
                             const EdgeInsets.only(top: 18, left: 18, right: 18),
                         child: Container(
-                          height: 60,
+                          height: 70,
                           decoration: BoxDecoration(
                             color: Colors.black,
                             borderRadius: BorderRadius.circular(5),
@@ -89,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Padding(
                             padding: const EdgeInsets.all(5.0),
                             child: TextFormField(
-                              controller: shopName,
+                              controller: shopNamecontroller,
                               style: const TextStyle(
                                 color: Colors.white,
                                 letterSpacing: 0.8,
@@ -119,7 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         padding:
                             const EdgeInsets.only(top: 18, left: 18, right: 18),
                         child: Container(
-                          height: 60,
+                          height: 70,
                           decoration: BoxDecoration(
                             color: Colors.black,
                             borderRadius: BorderRadius.circular(5),
@@ -127,7 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Padding(
                             padding: const EdgeInsets.all(5.0),
                             child: TextFormField(
-                              controller: contactNumber,
+                              controller: contactNumbercontroller,
                               style: const TextStyle(
                                 color: Colors.white,
                                 letterSpacing: 0.8,
@@ -161,7 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           bottom: 18,
                         ),
                         child: Container(
-                          height: 60,
+                          height: 70,
                           decoration: BoxDecoration(
                             color: Colors.black,
                             borderRadius: BorderRadius.circular(5),
@@ -169,14 +194,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Padding(
                             padding: const EdgeInsets.all(5.0),
                             child: TextFormField(
-                              controller: cafeAddress,
+                              controller: locationcontroller,
                               style: const TextStyle(
                                 color: Colors.white,
                                 letterSpacing: 0.8,
                                 fontSize: 16,
                               ),
                               decoration: InputDecoration(
-                                prefixIcon: Icon(
+                                prefixIcon: const Icon(
                                   Icons.my_location,
                                   color: Colors.blue,
                                 ),
@@ -217,7 +242,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: 40,
                       child: ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(primary: Colors.black),
-                        onPressed: () {},
+                        onPressed: () {
+                          getCurrentLocation();
+                        },
                         icon: const Icon(
                           Icons.location_on,
                           color: Colors.green,
