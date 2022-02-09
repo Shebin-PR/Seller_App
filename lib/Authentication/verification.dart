@@ -2,8 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pin_input_text_field/pin_input_text_field.dart';
+import 'package:salt_n_pepper_seller/Authentication/register.dart';
 import 'package:salt_n_pepper_seller/Controller/controller.dart';
-import 'package:salt_n_pepper_seller/Screens/homescreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // ignore: must_be_immutable
@@ -25,7 +25,7 @@ class Verification extends StatelessWidget {
       print("Successfully signed in UID: ${user.uid}");
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setBool("login", true);
-      Get.offAll(() => const HomeScreen());
+      Get.offAll(() =>  RegisterScreen(user: user,));
     } catch (e) {
       Get.snackbar(
         "Invalid OTP",
@@ -158,9 +158,9 @@ class Verification extends StatelessWidget {
             ),
           ),
         ),
-        Center(
-          child: TextButton(onPressed: () {}, child: const Text("Resend Otp")),
-        )
+        // Center(
+        //   child: TextButton(onPressed: () {}, child: const Text("Resend Otp")),
+        // )
       ],
     );
   }

@@ -1,44 +1,33 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
+import 'package:salt_n_pepper_seller/Screens/home.dart';
+import 'package:salt_n_pepper_seller/Widgets/error_dialog.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class RegisterScreen extends StatefulWidget {
+  User? user;
+  RegisterScreen({Key? key, this.user}) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   // final _auth = FirebaseAuth.instance;
 
-  TextEditingController shopOwnerNamecontroller = TextEditingController();
+  TextEditingController sellerNamecontroller = TextEditingController();
   TextEditingController shopNamecontroller = TextEditingController();
-  TextEditingController contactNumbercontroller = TextEditingController();
+  TextEditingController phonecontroller = TextEditingController();
   TextEditingController locationcontroller = TextEditingController();
 
   Position? position;
 
   List<Placemark>? placemarks;
 
-  getCurrentLocation() async {
-    LocationPermission permission;
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-    }
-    Position newPosition = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
-    position = newPosition;
-    placemarks =
-        await placemarkFromCoordinates(position!.latitude, position!.longitude);
-    Placemark pMark = placemarks![0];
-
-    String completeAddress =
-        '${pMark.subThoroughfare} ${pMark.thoroughfare} , ${pMark.subLocality} ${pMark.locality}, ${pMark.subAdministrativeArea} , ${pMark.administrativeArea} ${pMark.postalCode}, ${pMark.country}';
-    locationcontroller.text = completeAddress;
-  }
+  String completeAddress = "";
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Padding(
                             padding: const EdgeInsets.all(5.0),
                             child: TextFormField(
-                              controller: shopOwnerNamecontroller,
+                              controller: sellerNamecontroller,
                               style: const TextStyle(
                                 color: Colors.white,
                                 letterSpacing: 0.8,
@@ -88,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   color: Colors.blue,
                                 ),
                                 label: const Text(
-                                  "Shop Owner name",
+                                  "Seller name",
                                   style: TextStyle(
                                     color: Colors.blue,
                                     fontSize: 20,
@@ -152,7 +141,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Padding(
                             padding: const EdgeInsets.all(5.0),
                             child: TextFormField(
-                              controller: contactNumbercontroller,
+                              controller: phonecontroller,
                               style: const TextStyle(
                                 color: Colors.white,
                                 letterSpacing: 0.8,
@@ -263,7 +252,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: 40,
                       child: ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(primary: Colors.black),
-                        onPressed: () {},
+                        onPressed: () {
+                          setState(() {
+                            formValidator();
+                          });
+                        },
                         icon: const Icon(
                           Icons.folder_shared_rounded,
                           color: Colors.red,
@@ -282,6 +275,58 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  getCurrentLocation() async {
+    LocationPermission permission;
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+    Position newPosition = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+    position = newPosition;
+    placemarks =
+        await placemarkFromCoordinates(position!.latitude, position!.longitude);
+    Placemark pMark = placemarks![0];
+
+    completeAddress =
+        '${pMark.subThoroughfare} ${pMark.thoroughfare} , ${pMark.subLocality} ${pMark.locality}, ${pMark.subAdministrativeArea} , ${pMark.administrativeArea} ${pMark.postalCode}, ${pMark.country}';
+    locationcontroller.text = completeAddress;
+  }
+
+  formValidator() {
+    if (shopNamecontroller.text.isNotEmpty &&
+        sellerNamecontroller.text.isNotEmpty &&
+        phonecontroller.text.isNotEmpty &&
+        locationcontroller.text.isNotEmpty) {
+      saveDataToFirestore(widget.user!);
+    } else {
+      showDialog(
+        context: context,
+        builder: (ctx) {
+          return const ErrorDialogWidget(
+            message: "All fields are required . !",
+          );
+        },
+      );
+    }
+  }
+
+  saveDataToFirestore(User currentUser) async {
+    FirebaseFirestore.instance.collection("sellers").doc(currentUser.uid).set({
+      "sellerUID": currentUser.uid,
+      "sellerName": sellerNamecontroller.text.trim(),
+      "shopName": shopNamecontroller.text.trim(),
+      "phone": phonecontroller.text.trim(),
+      "address": completeAddress,
+      "status": "approved",
+      "earnings": 0.0,
+      "lat": position!.latitude,
+      "lng": position!.longitude
+    });
+    Get.to(() => const HomeScreen());
   }
 }
 
