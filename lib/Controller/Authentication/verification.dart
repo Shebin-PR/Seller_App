@@ -2,7 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pin_input_text_field/pin_input_text_field.dart';
-import 'package:salt_n_pepper_seller/Authentication/register.dart';
+import 'package:salt_n_pepper_seller/Controller/Authentication/register.dart';
+
 import 'package:salt_n_pepper_seller/Controller/controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -25,7 +26,9 @@ class Verification extends StatelessWidget {
       print("Successfully signed in UID: ${user.uid}");
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setBool("login", true);
-      Get.offAll(() =>  RegisterScreen(user: user,));
+      Get.offAll(() => RegisterScreen(
+            user: user,
+          ));
     } catch (e) {
       Get.snackbar(
         "Invalid OTP",
@@ -39,7 +42,7 @@ class Verification extends StatelessWidget {
   }
 
   TextEditingController pinEditingController = TextEditingController();
-  var controller = Get.put(Controller());
+  Controller controller = Get.put(Controller());
   @override
   Widget build(BuildContext context) {
     // final controller = Get.put(Controller());

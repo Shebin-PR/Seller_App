@@ -1,11 +1,15 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:salt_n_pepper_seller/Screens/home.dart';
-import 'package:salt_n_pepper_seller/Widgets/error_dialog.dart';
+
+import 'package:salt_n_pepper_seller/View/Widgets/error_dialog.dart';
+import 'package:salt_n_pepper_seller/View/Widgets/loading_dialog.dart';
+import 'package:salt_n_pepper_seller/View/home.dart';
 
 class RegisterScreen extends StatefulWidget {
   User? user;
@@ -301,6 +305,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
         sellerNamecontroller.text.isNotEmpty &&
         phonecontroller.text.isNotEmpty &&
         locationcontroller.text.isNotEmpty) {
+      // showDialog(
+      //   context: context,
+      //   builder: (ctx) {
+      //     return const LoadingDialogWidget(
+      //       message: "Registering Account",
+      //     );
+      //   },
+      // );
       saveDataToFirestore(widget.user!);
     } else {
       showDialog(
@@ -326,8 +338,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
       "lat": position!.latitude,
       "lng": position!.longitude
     });
-    Get.to(() => const HomeScreen());
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return const LoadingDialogWidget(
+          message: "Registering Account",
+        );
+      },
+    );
+    Timer(const Duration(seconds: 2), goToHomeScreen);
+   
   }
+
+ goToHomeScreen(){
+   Get.offAll(() => const HomeScreen());
+}
+
 }
 
 

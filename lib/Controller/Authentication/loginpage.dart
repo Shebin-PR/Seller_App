@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:salt_n_pepper_seller/Authentication/verification.dart';
+import 'package:salt_n_pepper_seller/Controller/Authentication/verification.dart';
 import 'package:salt_n_pepper_seller/Controller/controller.dart';
 
 // ignore: must_be_immutable
@@ -18,7 +18,6 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     verificationCompleted = (PhoneAuthCredential phoneAuthCredential) async {
       await _auth.signInWithCredential(phoneAuthCredential);
     };
@@ -32,8 +31,11 @@ class LoginPage extends StatelessWidget {
     };
 
     verificationFailed = (FirebaseAuthException authException) {
-      Get.snackbar("Failed", "Please Enter valid Mobile Number",
-          snackPosition: SnackPosition.BOTTOM,);
+      Get.snackbar(
+        "Failed",
+        "Please Enter valid Mobile Number",
+        snackPosition: SnackPosition.BOTTOM,
+      );
 
       // print(authException.message);
     };
@@ -118,8 +120,7 @@ class LoginPage extends StatelessWidget {
                   decoration: const InputDecoration(
                     focusedBorder: InputBorder.none,
                     filled: true,
-                    border:
-                        OutlineInputBorder(borderSide: BorderSide.none),
+                    border: OutlineInputBorder(borderSide: BorderSide.none),
                   ),
                 ),
               ),
@@ -131,17 +132,18 @@ class LoginPage extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () async {
                 if (_formKey.currentState!.validate()) {
-                   String number = "+91${mobileNoController.text}";
+                  final String number = "+91${mobileNoController.text}";
                   try {
                     await _auth.verifyPhoneNumber(
-                        phoneNumber: number,
-                        timeout: const Duration(seconds: 5),
-                        verificationCompleted: verificationCompleted!,
-                        verificationFailed: verificationFailed!,
-                        codeSent: codeSent!,
-                        codeAutoRetrievalTimeout: codeAutoRetrievalTimeout!,);
+                      phoneNumber: number,
+                      timeout: const Duration(seconds: 5),
+                      verificationCompleted: verificationCompleted!,
+                      verificationFailed: verificationFailed!,
+                      codeSent: codeSent!,
+                      codeAutoRetrievalTimeout: codeAutoRetrievalTimeout!,
+                    );
                   } catch (e) {
-                    print("Failed to Verify Phone Number: ${e}");
+                    print("Failed to Verify Phone Number: $e");
                   }
                 }
               },
