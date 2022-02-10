@@ -8,11 +8,11 @@ class Controller extends GetxController {
   void onInit() {
     checkLoginOrNot();
     super.onInit();
-  } 
+  }
 
   checkLoginOrNot() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userIsAlreadyLogin = prefs.getBool("login");
-    // update();
+    update();
   }
 }

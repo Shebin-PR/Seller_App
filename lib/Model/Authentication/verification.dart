@@ -2,9 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pin_input_text_field/pin_input_text_field.dart';
-import 'package:salt_n_pepper_seller/Controller/Authentication/register.dart';
 
 import 'package:salt_n_pepper_seller/Controller/controller.dart';
+import 'package:salt_n_pepper_seller/Model/Authentication/register.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // ignore: must_be_immutable

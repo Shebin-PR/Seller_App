@@ -1,10 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:salt_n_pepper_seller/Controller/Authentication/loginpage.dart';
-
 import 'package:salt_n_pepper_seller/Controller/controller.dart';
-
+import 'package:salt_n_pepper_seller/Model/Authentication/loginpage.dart';
 import 'package:salt_n_pepper_seller/View/home.dart';
 
 Future<void> main(List<String> args) async {

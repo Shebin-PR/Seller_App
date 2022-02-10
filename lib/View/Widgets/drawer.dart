@@ -63,7 +63,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                       );
                     },
                     leading: Icon(
-                      Icons.lightbulb_outline,
+                      Icons.home,
                       color: Colors.blueGrey[900],
                     ),
                     title: Text(
@@ -78,21 +78,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                 ListTile(
                   onTap: () {},
                   leading: Icon(
-                    Icons.notifications_none_outlined,
-                    color: Colors.blueGrey[900],
-                  ),
-                  title: Text(
-                    "New orders",
-                    style: TextStyle(
-                      fontSize: 22,
-                      color: Colors.blueGrey[900],
-                    ),
-                  ),
-                ),
-                ListTile(
-                  onTap: () {},
-                  leading: Icon(
-                    Icons.add,
+                    Icons.account_balance_wallet_rounded,
                     color: Colors.blueGrey[900],
                   ),
                   title: Text(
@@ -106,11 +92,11 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                 ListTile(
                   onTap: () {},
                   leading: Icon(
-                    Icons.archive_outlined,
+                    Icons.delivery_dining_rounded,
                     color: Colors.blueGrey[900],
                   ),
                   title: Text(
-                    "History",
+                    "Orders",
                     style: TextStyle(
                       fontSize: 22,
                       color: Colors.blueGrey[900],
@@ -120,7 +106,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                 ListTile(
                   onTap: () {},
                   leading: Icon(
-                    Icons.settings_outlined,
+                    Icons.settings_sharp,
                     color: Colors.blueGrey[900],
                   ),
                   title: Text(
@@ -134,11 +120,11 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                 ListTile(
                   onTap: () {},
                   leading: Icon(
-                    Icons.help_outline_outlined,
+                    Icons.logout_rounded,
                     color: Colors.blueGrey[900],
                   ),
                   title: Text(
-                    "Help & feedback",
+                    "Sign Out",
                     style: TextStyle(
                       fontSize: 22,
                       color: Colors.blueGrey[900],

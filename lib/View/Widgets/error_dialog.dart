@@ -9,7 +9,9 @@ class ErrorDialogWidget extends StatelessWidget {
     return AlertDialog(
       content: Text(
         message!,
-        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        style: const TextStyle(
+          fontSize: 18,
+        ),
       ),
       actions: [
         ElevatedButton(

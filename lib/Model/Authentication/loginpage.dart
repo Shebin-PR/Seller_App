@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:salt_n_pepper_seller/Controller/Authentication/verification.dart';
 import 'package:salt_n_pepper_seller/Controller/controller.dart';
+import 'package:salt_n_pepper_seller/Model/Authentication/verification.dart';
 
 // ignore: must_be_immutable
 class LoginPage extends StatelessWidget {

@@ -342,18 +342,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
       context: context,
       builder: (ctx) {
         return const LoadingDialogWidget(
-          message: "Registering Account",
+          message: "Registering Account ",
         );
       },
     );
-    Timer(const Duration(seconds: 2), goToHomeScreen);
-   
+    Timer(const Duration(seconds: 3), goToHomeScreen);
   }
 
- goToHomeScreen(){
-   Get.offAll(() => const HomeScreen());
-}
-
+  goToHomeScreen() {
+    Get.offAll(() => const HomeScreen());
+  }
 }
 
 
