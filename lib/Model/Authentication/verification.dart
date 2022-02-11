@@ -26,9 +26,12 @@ class Verification extends StatelessWidget {
       print("Successfully signed in UID: ${user.uid}");
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setBool("login", true);
-      Get.offAll(() => RegisterScreen(
-            user: user,
-          ));
+
+      Get.offAll(
+        () => RegisterScreen(
+          user: user,
+        ),
+      );
     } catch (e) {
       Get.snackbar(
         "Invalid OTP",

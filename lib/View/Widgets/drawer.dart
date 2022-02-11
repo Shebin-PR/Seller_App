@@ -1,4 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:salt_n_pepper_seller/Model/Authentication/loginpage.dart';
 import 'package:salt_n_pepper_seller/View/home.dart';
 
 class DrawerWidget extends StatefulWidget {
@@ -9,6 +12,7 @@ class DrawerWidget extends StatefulWidget {
 }
 
 class _DrawerWidgetState extends State<DrawerWidget> {
+  final _auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -118,7 +122,10 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                   ),
                 ),
                 ListTile(
-                  onTap: () {},
+                  onTap: () async {
+                    await _auth.signOut();
+                    Get.offAll(() => LoginPage());
+                  },
                   leading: Icon(
                     Icons.logout_rounded,
                     color: Colors.blueGrey[900],

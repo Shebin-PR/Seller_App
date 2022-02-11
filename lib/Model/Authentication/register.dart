@@ -1,15 +1,14 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-
 import 'package:salt_n_pepper_seller/View/Widgets/error_dialog.dart';
 import 'package:salt_n_pepper_seller/View/Widgets/loading_dialog.dart';
 import 'package:salt_n_pepper_seller/View/home.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RegisterScreen extends StatefulWidget {
   User? user;
@@ -20,8 +19,6 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  // final _auth = FirebaseAuth.instance;
-
   TextEditingController sellerNamecontroller = TextEditingController();
   TextEditingController shopNamecontroller = TextEditingController();
   TextEditingController phonecontroller = TextEditingController();
@@ -305,14 +302,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         sellerNamecontroller.text.isNotEmpty &&
         phonecontroller.text.isNotEmpty &&
         locationcontroller.text.isNotEmpty) {
-      // showDialog(
-      //   context: context,
-      //   builder: (ctx) {
-      //     return const LoadingDialogWidget(
-      //       message: "Registering Account",
-      //     );
-      //   },
-      // );
       saveDataToFirestore(widget.user!);
     } else {
       showDialog(
@@ -346,6 +335,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
         );
       },
     );
+
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString("uid", currentUser.uid);
+    await prefs.setString("shopName", shopNamecontroller.text);
     Timer(const Duration(seconds: 3), goToHomeScreen);
   }
 
@@ -353,26 +346,3 @@ class _RegisterScreenState extends State<RegisterScreen> {
     Get.offAll(() => const HomeScreen());
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/////////////////// logout ////////////////////
-//                  ElevatedButton(
-//                 onPressed: () async {
-//                   await _auth.signOut();
-//                   Navigator.pop(context);
-//                 },
-//                 child: const Text("Logout"),
-//               )

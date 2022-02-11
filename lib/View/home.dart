@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:salt_n_pepper_seller/Model/Authentication/addmenuscreen.dart';
+import 'package:salt_n_pepper_seller/Model/global.dart';
 import 'package:salt_n_pepper_seller/View/Widgets/drawer.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -17,7 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.white,
         drawer: const DrawerWidget(),
         appBar: AppBar(
-          title: const Text("HomePage"),
+          title: Text(sharedPreferences!.getString("shopName").toString()),
           centerTitle: true,
           actions: [
             IconButton(
