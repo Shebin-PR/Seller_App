@@ -52,21 +52,18 @@ class _HomeScreenState extends State<HomeScreen> {
           builder: (context, snapshot) {
             List<Menus> data = [];
             if (snapshot.hasData) {
+              // ignore: cast_nullable_to_non_nullable
               data = snapshot.data as List<Menus>;
-              print(data.first.menuTitle);
+              // print(data.first.menuTitle);
               return ListView.builder(
                 physics: const ScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: data.length,
                 itemBuilder: (context, index) {
-                  // controller.popularImages.add(data[index].thumbnail);
                   return Card(
                     child: Stack(
                       alignment: AlignmentDirectional.bottomCenter,
                       children: [
-                        // FadeInImage.assetNetwork(
-                        //     placeholder: "assets/slider/23.jpg",
-                        //     image: data[index].thumbnail!),
                         Image.network(
                           data[index].thumbnail!,
                         ),
