@@ -42,61 +42,75 @@ class _HomeScreenState extends State<HomeScreen> {
             )
           ],
         ),
-        body: StreamBuilder(
-          stream: _api.getMenus(sharedPreferences!.getString("uid")!),
-          builder: (context, snapshot) {
-            List<Menus> data = [];
-            if (snapshot.hasData) {
-              // ignore: cast_nullable_to_non_nullable
-              data = snapshot.data as List<Menus>;
-              // print(data.first.menuTitle);
-              return ListView.builder(
-                physics: const ScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: data.length,
-                itemBuilder: (context, index) {
-                  return Card(
-                    child: Stack(
-                      alignment: AlignmentDirectional.bottomCenter,
-                      children: [
-                        Image.network(
-                          data[index].thumbnail!,
-                        ),
-                        Container(
-                          height: maxHeight * 0.2,
-                          width: maxWidth,
-                          color: Colors.black.withOpacity(0.6),
-                          child: Center(
-                            child: Column(
-                              children: [
-                                Text(
-                                  data[index].menuTitle!,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  data[index].aboutMenu!,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
+        body: ListView(
+          children: [
+            const Center(
+              child: Text(
+                "My Menus",
+                style: TextStyle(
+                  color: Colors.red,
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            StreamBuilder(
+              stream: _api.getMenus(sharedPreferences!.getString("uid")!),
+              builder: (context, snapshot) {
+                List<Menus> data = [];
+                if (snapshot.hasData) {
+                  // ignore: cast_nullable_to_non_nullable
+                  data = snapshot.data as List<Menus>;
+                  // print(data.first.menuTitle);
+                  return ListView.builder(
+                    physics: const ScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: data.length,
+                    itemBuilder: (context, index) {
+                      return Card(
+                        child: Stack(
+                          alignment: AlignmentDirectional.bottomCenter,
+                          children: [
+                            Image.network(
+                              data[index].thumbnail!,
                             ),
-                          ),
+                            Container(
+                              height: maxHeight * 0.15,
+                              width: maxWidth,
+                              color: Colors.black.withOpacity(0.6),
+                              child: Center(
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      data[index].menuTitle!,
+                                      style: const TextStyle(
+                                        color: Colors.orange,
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      data[index].aboutMenu!,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      );
+                    },
                   );
-                },
-              );
-            }
-            return const CircularProgressIndicator();
-          },
+                }
+                return const CircularProgressIndicator();
+              },
+            ),
+          ],
         ),
       ),
     );
