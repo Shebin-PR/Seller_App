@@ -252,7 +252,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       width: 330,
                       height: 40,
                       child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(primary: Colors.black),
+                        style: ElevatedButton.styleFrom(primary: Colors.black,),
                         onPressed: () {
                           setState(() {
                             formValidator();
@@ -337,8 +337,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
 
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString("uid", currentUser.uid);
-    await prefs.setString("shopName", shopNamecontroller.text);
+    prefs.setString("uid", currentUser.uid);
+    prefs.setString("shopName", shopNamecontroller.text);
     Timer(const Duration(seconds: 3), goToHomeScreen);
   }
 

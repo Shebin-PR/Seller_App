@@ -1,14 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:salt_n_pepper_seller/Controller/api_services.dart';
 import 'package:salt_n_pepper_seller/Model/Authentication/addmenuscreen.dart';
 import 'package:salt_n_pepper_seller/Model/global.dart';
 import 'package:salt_n_pepper_seller/Model/menu_model.dart';
-import 'package:salt_n_pepper_seller/View/Widgets/display_menus_in_home.dart';
 import 'package:salt_n_pepper_seller/View/Widgets/drawer.dart';
-import 'package:salt_n_pepper_seller/View/Widgets/progressbar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -18,7 +13,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  ApiServices _api = ApiServices();
+  final ApiServices _api = ApiServices();
   @override
   Widget build(BuildContext context) {
     final maxWidth = MediaQuery.of(context).size.width;
@@ -68,20 +63,32 @@ class _HomeScreenState extends State<HomeScreen> {
                           data[index].thumbnail!,
                         ),
                         Container(
-                          height: maxHeight * 0.1,
+                          height: maxHeight * 0.2,
                           width: maxWidth,
                           color: Colors.black.withOpacity(0.6),
                           child: Center(
-                            child: Text(
-                              data[index].menuTitle!,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            child: Column(
+                              children: [
+                                Text(
+                                  data[index].menuTitle!,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  data[index].aboutMenu!,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                   );

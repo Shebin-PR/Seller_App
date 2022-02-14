@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class Menus {
   String? menuID;
   String? sellerUID;

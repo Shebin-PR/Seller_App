@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:salt_n_pepper_seller/Model/menu_model.dart';
 
+// ignore: must_be_immutable
 class DisplayMenuList extends StatefulWidget {
   Menus? model;
   BuildContext? context;

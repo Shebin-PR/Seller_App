@@ -1,6 +1,5 @@
-import 'package:get/get.dart';
-import 'package:salt_n_pepper_seller/Model/menu_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:salt_n_pepper_seller/Model/menu_model.dart';
 
 class ApiServices {
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
