@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:salt_n_pepper_seller/Controller/api_services.dart';
-import 'package:salt_n_pepper_seller/Model/Authentication/addmenuscreen.dart';
 import 'package:salt_n_pepper_seller/Model/global.dart';
 import 'package:salt_n_pepper_seller/Model/menu_model.dart';
+import 'package:salt_n_pepper_seller/View/Widgets/addmenuscreen.dart';
 import 'package:salt_n_pepper_seller/View/Widgets/drawer.dart';
+import 'package:salt_n_pepper_seller/View/itemscreen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -46,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             const Center(
               child: Text(
-                "My Menus",
+                "My Menuss",
                 style: TextStyle(
                   color: Colors.red,
                   fontSize: 30,
@@ -67,47 +69,73 @@ class _HomeScreenState extends State<HomeScreen> {
                     shrinkWrap: true,
                     itemCount: data.length,
                     itemBuilder: (context, index) {
-                      return Card(
-                        child: Stack(
-                          alignment: AlignmentDirectional.bottomCenter,
-                          children: [
-                            Image.network(
-                              data[index].thumbnail!,
+                      return GestureDetector(
+                        onTap: () {
+                          Get.to(
+                            () => ItemScreen(
+                              data: data[index],
                             ),
-                            Container(
-                              height: maxHeight * 0.15,
-                              width: maxWidth,
-                              color: Colors.black.withOpacity(0.6),
-                              child: Center(
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      data[index].menuTitle!,
-                                      style: const TextStyle(
-                                        color: Colors.orange,
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.bold,
+                          );
+                        },
+                        child: Card(
+                          child: Stack(
+                            alignment: AlignmentDirectional.bottomCenter,
+                            children: [
+                              Image.network(
+                                data[index].thumbnail!,
+                                fit: BoxFit.fill,
+                                frameBuilder: (
+                                  context,
+                                  child,
+                                  frame,
+                                  wasSynchronouslyLoaded,
+                                ) =>
+                                    child,
+                                loadingBuilder:
+                                    (context, child, loadingProgress) {
+                                  if (loadingProgress == null) {
+                                    return child;
+                                  }
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                },
+                              ),
+                              Container(
+                                height: maxHeight * 0.15,
+                                width: maxWidth,
+                                color: Colors.black.withOpacity(0.6),
+                                child: Center(
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        data[index].menuTitle!,
+                                        style: const TextStyle(
+                                          color: Colors.orange,
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      data[index].aboutMenu!,
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
+                                      Text(
+                                        data[index].aboutMenu!,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       );
                     },
                   );
                 }
-                return const CircularProgressIndicator();
+                return Center(child: const CircularProgressIndicator());
               },
             ),
           ],

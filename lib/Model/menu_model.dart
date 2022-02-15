@@ -35,7 +35,7 @@ class Menus {
     data["aboutMenu"] = aboutMenu!;
     data["thumbnail"] = thumbnail!;
     data["status"] = status!;
-    data["publishedDate"] = this.publishedDate!;
+    data["publishedDate"] = publishedDate!;
 
     return data;
   }

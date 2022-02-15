@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart' as storageRef;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:salt_n_pepper_seller/View/Widgets/error_dialog.dart';
 import 'package:salt_n_pepper_seller/View/Widgets/loading_dialog.dart';
-import 'package:firebase_storage/firebase_storage.dart' as storageRef;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AddMenuScreen extends StatefulWidget {
@@ -19,9 +19,9 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
   final ImagePicker _picker = ImagePicker();
   String? userID;
   getid() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
+    final SharedPreferences preferences = await SharedPreferences.getInstance();
 
-    userID = await preferences.getString("uid");
+    userID = preferences.getString("uid");
   }
 
   TextEditingController aboutController = TextEditingController();
