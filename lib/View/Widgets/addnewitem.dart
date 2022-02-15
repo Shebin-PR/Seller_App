@@ -29,9 +29,12 @@ class _AddNewItemState extends State<AddNewItem> {
   TextEditingController aboutController = TextEditingController();
   TextEditingController titleController = TextEditingController();
   TextEditingController priceController = TextEditingController();
+  TextEditingController secondpriceController = TextEditingController();
   TextEditingController discriptionController = TextEditingController();
   TextEditingController sizeController = TextEditingController();
-
+  TextEditingController secondsizeController = TextEditingController();
+  TextEditingController thirdpriceController = TextEditingController();
+  TextEditingController thirdsizeController = TextEditingController();
   bool uploadingItem = false;
 
   @override
@@ -52,7 +55,7 @@ class _AddNewItemState extends State<AddNewItem> {
         backgroundColor: Colors.lightBlue[200],
         appBar: AppBar(
           backgroundColor: Colors.lightBlue[900],
-          title: const Text("Add Item to Menu"),
+          title: const Text("Add Item"),
           centerTitle: true,
         ),
         body: Center(
@@ -129,7 +132,10 @@ class _AddNewItemState extends State<AddNewItem> {
   picImageWithCamera() async {
     Navigator.pop(context);
     imageXfile = await _picker.pickImage(
-        source: ImageSource.camera, maxHeight: 250, maxWidth: 450);
+      source: ImageSource.camera,
+      maxHeight: 250,
+      maxWidth: 450,
+    );
     setState(() {
       imageXfile;
     });
@@ -138,8 +144,12 @@ class _AddNewItemState extends State<AddNewItem> {
   picImageWithGallery() async {
     Navigator.pop(context);
     imageXfile = await _picker.pickImage(
-        source: ImageSource.gallery, maxHeight: 250, maxWidth: 450);
+      source: ImageSource.gallery,
+      maxHeight: 250,
+      maxWidth: 450,
+    );
     setState(() {
+      // ignore: unnecessary_statements
       imageXfile;
     });
   }
@@ -157,12 +167,12 @@ class _AddNewItemState extends State<AddNewItem> {
             icon: const Icon(Icons.arrow_back_ios_new),
           ),
           backgroundColor: Colors.lightBlue[900],
-          title: const Text("Add menu"),
+          title: const Text("Add Item"),
           centerTitle: true,
         ),
         body: uploadingItem == true
             ? const LoadingDialogWidget(
-                message: "Uploading menu ",
+                message: "Uploading Item ",
               )
             : ListView(
                 children: [
@@ -274,6 +284,78 @@ class _AddNewItemState extends State<AddNewItem> {
                       ),
                     ),
                   ),
+                  const Divider(),
+                  ListTile(
+                    leading: Icon(
+                      Icons.notes,
+                      color: Colors.blue.shade900,
+                    ),
+                    title: SizedBox(
+                      width: 200,
+                      child: TextFormField(
+                        controller: secondpriceController,
+                        style: const TextStyle(color: Colors.black),
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          hintText: "price",
+                        ),
+                      ),
+                    ),
+                  ),
+                  const Divider(),
+                  ListTile(
+                    leading: Icon(
+                      Icons.check_box_outline_blank_outlined,
+                      color: Colors.blue.shade900,
+                    ),
+                    title: SizedBox(
+                      width: 200,
+                      child: TextFormField(
+                        controller: secondsizeController,
+                        style: const TextStyle(color: Colors.black),
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          hintText: "Quantity",
+                        ),
+                      ),
+                    ),
+                  ),
+                  const Divider(),
+                  ListTile(
+                    leading: Icon(
+                      Icons.check_box_outline_blank_outlined,
+                      color: Colors.blue.shade900,
+                    ),
+                    title: SizedBox(
+                      width: 200,
+                      child: TextFormField(
+                        controller: thirdpriceController,
+                        style: const TextStyle(color: Colors.black),
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          hintText: "price",
+                        ),
+                      ),
+                    ),
+                  ),
+                  const Divider(),
+                  ListTile(
+                    leading: Icon(
+                      Icons.check_box_outline_blank_outlined,
+                      color: Colors.blue.shade900,
+                    ),
+                    title: SizedBox(
+                      width: 200,
+                      child: TextFormField(
+                        controller: thirdsizeController,
+                        style: const TextStyle(color: Colors.black),
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          hintText: "Quantity",
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
         floatingActionButton: GestureDetector(
@@ -319,7 +401,10 @@ class _AddNewItemState extends State<AddNewItem> {
         });
         String uniqueName = DateTime.now().millisecondsSinceEpoch.toString();
         String? downloadUrl = await uploadImage(
-            File(imageXfile!.path), uniqueName, widget.data.menuID);
+          File(imageXfile!.path),
+          uniqueName,
+          widget.data.menuID,
+        );
 
         saveInfoToFirestore(downloadUrl, uniqueName, widget.data.menuID!);
       } else {
@@ -351,7 +436,7 @@ class _AddNewItemState extends State<AddNewItem> {
         storageRef.FirebaseStorage.instance.ref().child("menus");
 
     final storageRef.UploadTask uploadTask =
-        reference.child("$menuID.jpg").putFile(mImageFile);
+        reference.child("$uniqueName.jpg").putFile(mImageFile);
 
     storageRef.TaskSnapshot taskSnapshot = await uploadTask;
 
@@ -368,14 +453,23 @@ class _AddNewItemState extends State<AddNewItem> {
         .collection("menus")
         .doc(menuID)
         .collection("items");
+    final map = secondsizeController.text.isNotEmpty
+        ? {
+            sizeController.text: priceController.text,
+            secondsizeController.text: secondpriceController.text,
+            thirdsizeController.text: thirdpriceController.text,
+          }
+        : {
+            sizeController.text: priceController.text,
+          };
     ref.doc(uniqueName).set({
       "itemID": uniqueName,
       "sellerUID": userID,
       "title": titleController.text,
       "aboutItem": aboutController.text,
-      "price": priceController.text,
+      // "price": priceController.text,
       "discription": discriptionController.text,
-      "size": sizeController.text,
+      "size": map,
       "status": "available",
       "publishedDate": DateTime.now(),
       "thumbnail": downloadUrl
