@@ -286,7 +286,7 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
   }
 
   Future<String> uploadImage(File mImageFile, String uniqueName) async {
-    print(userID);
+    // print(userID);
     storageRef.Reference reference =
         storageRef.FirebaseStorage.instance.ref().child("menus");
 
@@ -296,12 +296,12 @@ class _AddMenuScreenState extends State<AddMenuScreen> {
     storageRef.TaskSnapshot taskSnapshot = await uploadTask;
 
     String downloadUrl = await taskSnapshot.ref.getDownloadURL();
-    print(downloadUrl);
+    // print(downloadUrl);
     return downloadUrl;
   }
 
   saveInfoToFirestore(String downloadUrl, String uniqueName) {
-    print(userID);
+    // print(userID);
     final ref = FirebaseFirestore.instance
         .collection("sellers")
         .doc(userID)
