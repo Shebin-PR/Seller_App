@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:salt_n_pepper_seller/Controller/controller.dart';
 import 'package:salt_n_pepper_seller/Model/Authentication/loginpage.dart';
 import 'package:salt_n_pepper_seller/Model/global.dart';
-import 'package:salt_n_pepper_seller/View/home.dart';
+import 'package:salt_n_pepper_seller/View/HomeScreen/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main(List<String> args) async {

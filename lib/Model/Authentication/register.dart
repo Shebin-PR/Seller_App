@@ -5,11 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:salt_n_pepper_seller/View/HomeScreen/home.dart';
 import 'package:salt_n_pepper_seller/View/Widgets/error_dialog.dart';
 import 'package:salt_n_pepper_seller/View/Widgets/loading_dialog.dart';
-import 'package:salt_n_pepper_seller/View/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+// ignore: must_be_immutable
 class RegisterScreen extends StatefulWidget {
   User? user;
   RegisterScreen({Key? key, this.user}) : super(key: key);

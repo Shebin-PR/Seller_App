@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:salt_n_pepper_seller/Controller/api_services.dart';
+import 'package:salt_n_pepper_seller/Model/global.dart';
 import 'package:salt_n_pepper_seller/Model/itemmodel.dart';
 import 'package:salt_n_pepper_seller/Model/menu_model.dart';
-import 'package:salt_n_pepper_seller/View/Widgets/addnewitem.dart';
+import 'package:salt_n_pepper_seller/View/Item/addnewitem.dart';
 
 class ItemScreen extends StatefulWidget {
   Menus data;
@@ -15,6 +17,20 @@ class ItemScreen extends StatefulWidget {
 
 class _ItemScreenState extends State<ItemScreen> {
   ApiServices apiServices = ApiServices();
+
+  deleteItem(String menuID, String itemID) {
+    FirebaseFirestore.instance
+        .collection("sellers")
+        .doc(sharedPreferences!.getString("uid"))
+        .collection("menus")
+        .doc(menuID)
+        .collection("items")
+        .doc(itemID)
+        .delete();
+
+    Fluttertoast.showToast(msg: "Item deleted successfullly");
+  }
+
   @override
   Widget build(BuildContext context) {
     final maxWidth = MediaQuery.of(context).size.width;
@@ -46,6 +62,7 @@ class _ItemScreenState extends State<ItemScreen> {
               apiServices.getItems(widget.data.sellerUID!, widget.data.menuID!),
           builder: (context, snapshot) {
             List<ItemModel> data = [];
+
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
                 child: CircularProgressIndicator(),
@@ -54,7 +71,7 @@ class _ItemScreenState extends State<ItemScreen> {
             if (snapshot.hasData) {
               // ignore: cast_nullable_to_non_nullable
               data = snapshot.data as List<ItemModel>;
-
+              String mid = widget.data.menuID.toString();
               return ListView.builder(
                 // gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 //     crossAxisCount: 2),
@@ -69,7 +86,11 @@ class _ItemScreenState extends State<ItemScreen> {
                       children: [
                         Container(
                           margin: const EdgeInsets.only(
-                              left: 40, right: 40, top: 20),
+                            left: 40,
+                            right: 40,
+                            top: 10,
+                            bottom: 20,
+                          ),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(
                               10,
@@ -167,14 +188,20 @@ class _ItemScreenState extends State<ItemScreen> {
                           left: 300,
                           top: 30,
                           child: IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              deleteItem(
+                                data[index].itemId.toString(),
+                                mid,
+                              );
+                              print(data[index].itemId.toString());
+                            },
                             icon: Icon(
                               Icons.delete,
                               size: 35,
-                              color: Colors.blue[900],
+                              color: Colors.blue.shade200,
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                   );

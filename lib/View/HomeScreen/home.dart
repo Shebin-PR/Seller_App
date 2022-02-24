@@ -1,11 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:salt_n_pepper_seller/Controller/api_services.dart';
 import 'package:salt_n_pepper_seller/Model/global.dart';
 import 'package:salt_n_pepper_seller/Model/menu_model.dart';
-import 'package:salt_n_pepper_seller/View/Widgets/addmenuscreen.dart';
+import 'package:salt_n_pepper_seller/View/Item/itemscreen.dart';
+import 'package:salt_n_pepper_seller/View/Menu/addmenuscreen.dart';
 import 'package:salt_n_pepper_seller/View/Widgets/drawer.dart';
-import 'package:salt_n_pepper_seller/View/itemscreen.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -16,6 +18,18 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final ApiServices _api = ApiServices();
+
+  deleteMenu(String menuID) {
+    FirebaseFirestore.instance
+        .collection("sellers")
+        .doc(sharedPreferences!.getString("uid"))
+        .collection("menus")
+        .doc(menuID)
+        .delete();
+
+    Fluttertoast.showToast(msg: "Menu deleted successfullly");
+  }
+
   @override
   Widget build(BuildContext context) {
     final maxWidth = MediaQuery.of(context).size.width;
@@ -46,16 +60,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         body: ListView(
           children: [
-            const Center(
-              child: Text(
-                "My Menuss",
-                style: TextStyle(
-                  color: Colors.red,
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
             StreamBuilder(
               stream: _api.getMenus(sharedPreferences!.getString("uid")!),
               builder: (context, snapshot) {
@@ -106,7 +110,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 width: maxWidth,
                                 color: Colors.black.withOpacity(0.6),
                                 child: Center(
-                                  child: Column(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
                                         data[index].menuTitle!,
@@ -116,14 +121,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      Text(
-                                        data[index].aboutMenu!,
-                                        style: const TextStyle(
+                                      IconButton(
+                                        onPressed: () {
+                                          deleteMenu(
+                                            data[index].menuID.toString(),
+                                          );
+                                        },
+                                        icon: const Icon(
+                                          Icons.delete_outline,
                                           color: Colors.white,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
                                         ),
-                                      ),
+                                      )
                                     ],
                                   ),
                                 ),
@@ -135,7 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                   );
                 }
-                return Center(child: const CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               },
             ),
           ],

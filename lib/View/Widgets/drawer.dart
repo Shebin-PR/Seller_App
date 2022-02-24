@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:salt_n_pepper_seller/Model/Authentication/loginpage.dart';
-import 'package:salt_n_pepper_seller/View/home.dart';
+import 'package:salt_n_pepper_seller/View/HomeScreen/home.dart';
 
 class DrawerWidget extends StatefulWidget {
   const DrawerWidget({Key? key}) : super(key: key);
